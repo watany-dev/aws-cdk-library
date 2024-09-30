@@ -3,7 +3,7 @@ import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
-import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
+import { NodejsFunction, NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
 import {
   CfnResource,
@@ -19,7 +19,7 @@ import { CrossRegionStringParamReaderProvider } from 'aws-cdk-lib/custom-resourc
 /**
  * Properties for creating a Lambda@Edge function
  */
-export interface EdgeFunctionProps extends lambda.FunctionProps {
+export interface EdgeFunctionProps extends NodejsFunctionProps {
   /**
    * The stack ID of Lambda@Edge function.
    *
@@ -159,8 +159,8 @@ export class EdgeFunction extends Resource implements lambda.IVersion {
   }
 
   /** Create a function in-region */
-  private createInRegionFunction(props: lambda.FunctionProps): FunctionConfig {
-    const edgeFunction = new lambda.Function(this, 'Fn', props);
+  private createInRegionFunction(props: NodejsFunctionProps): FunctionConfig {
+    const edgeFunction = new NodejsFunction(this, 'Fn', props);
     addEdgeLambdaToRoleTrustStatement(edgeFunction.role!);
 
     return { edgeFunction, edgeArn: edgeFunction.currentVersion.edgeArn };
@@ -177,7 +177,7 @@ export class EdgeFunction extends Resource implements lambda.IVersion {
     const parameterName = `/${parameterNamePrefix}/${this.env.region}/${sanitizedPath}`;
     const functionStack = this.edgeStack(props.stackId);
 
-    const edgeFunction = new lambda.Function(functionStack, id, props);
+    const edgeFunction = new NodejsFunction(functionStack, id, props);
     addEdgeLambdaToRoleTrustStatement(edgeFunction.role!);
 
     // Store the current version's ARN to be retrieved by the cross region reader below.
