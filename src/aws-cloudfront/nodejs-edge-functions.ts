@@ -39,7 +39,7 @@ export interface EdgeFunctionProps extends NodejsFunctionProps {
  *
  * @resource AWS::Lambda::Function
  */
-export class EdgeFunction extends Resource implements lambda.IVersion {
+export class NodejsEdgeFunction extends Resource implements lambda.IVersion {
 
   private static readonly EDGE_REGION: string = 'us-east-1';
 
@@ -133,19 +133,19 @@ export class EdgeFunction extends Resource implements lambda.IVersion {
     return this.lambda.grantInvokeCompositePrincipal(compositePrincipal);
   }
   public metric(metricName: string, props?: cloudwatch.MetricOptions): cloudwatch.Metric {
-    return this.lambda.metric(metricName, { ...props, region: EdgeFunction.EDGE_REGION });
+    return this.lambda.metric(metricName, { ...props, region: NodejsEdgeFunction.EDGE_REGION });
   }
   public metricDuration(props?: cloudwatch.MetricOptions): cloudwatch.Metric {
-    return this.lambda.metricDuration({ ...props, region: EdgeFunction.EDGE_REGION });
+    return this.lambda.metricDuration({ ...props, region: NodejsEdgeFunction.EDGE_REGION });
   }
   public metricErrors(props?: cloudwatch.MetricOptions): cloudwatch.Metric {
-    return this.lambda.metricErrors({ ...props, region: EdgeFunction.EDGE_REGION });
+    return this.lambda.metricErrors({ ...props, region: NodejsEdgeFunction.EDGE_REGION });
   }
   public metricInvocations(props?: cloudwatch.MetricOptions): cloudwatch.Metric {
-    return this.lambda.metricInvocations({ ...props, region: EdgeFunction.EDGE_REGION });
+    return this.lambda.metricInvocations({ ...props, region: NodejsEdgeFunction.EDGE_REGION });
   }
   public metricThrottles(props?: cloudwatch.MetricOptions): cloudwatch.Metric {
-    return this.lambda.metricThrottles({ ...props, region: EdgeFunction.EDGE_REGION });
+    return this.lambda.metricThrottles({ ...props, region: NodejsEdgeFunction.EDGE_REGION });
   }
   /** Adds an event source to this function. */
   public addEventSource(source: lambda.IEventSource): void {
