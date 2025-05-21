@@ -135,9 +135,12 @@ export class ApplicationInferenceProfile extends Resource implements IApplicatio
       public readonly inferenceProfileId = inferenceProfileId;
 
       /**
-       * Internal implementation of grant logic
+       * Grants permissions to an IAM principal to invoke Bedrock foundation models
+       *
+       * By default, this grants permissions to invoke models only via the inference profile.
+       * To allow direct model access, set allowModelsDirectAccess to true in the options.
        */
-      private _grantInvokeImplementation(grantee: iam.IGrantable, options: GrantInvokeOptions = {}): iam.Grant {
+      public grantInvoke(grantee: iam.IGrantable, options: GrantInvokeOptions = {}): iam.Grant {
         const foundationModelArn = options.foundationModelArn || 'arn:aws:bedrock:*::foundation-model/*';
         const allowDirectAccess = options.allowModelsDirectAccess ?? false;
 
@@ -204,16 +207,6 @@ export class ApplicationInferenceProfile extends Resource implements IApplicatio
 
         return grant;
       }
-
-      /**
-       * Grants permissions to an IAM principal to invoke Bedrock foundation models
-       *
-       * By default, this grants permissions to invoke models only via the inference profile.
-       * To allow direct model access, set allowModelsDirectAccess to true in the options.
-       */
-      public grantInvoke(grantee: iam.IGrantable, options: GrantInvokeOptions = {}): iam.Grant {
-        return this._grantInvokeImplementation(grantee, options);
-      }
     }
 
     return new Import(scope, id);
@@ -261,9 +254,16 @@ export class ApplicationInferenceProfile extends Resource implements IApplicatio
   }
 
   /**
-   * Internal implementation of grant logic
+   * Grants permissions to an IAM principal to invoke Bedrock foundation models
+   *
+   * By default, this grants permissions to invoke models only via the inference profile.
+   * To allow direct model access, set allowModelsDirectAccess to true in the options.
+   *
+   * @param grantee The IAM principal to grant permissions to
+   * @param options Additional options (such as allowing direct model access or tag conditions)
+   * @returns The granted permission
    */
-  private _grantInvokeImplementation(grantee: iam.IGrantable, options: GrantInvokeOptions = {}): iam.Grant {
+  public grantInvoke(grantee: iam.IGrantable, options: GrantInvokeOptions = {}): iam.Grant {
     const foundationModelArn = options.foundationModelArn || 'arn:aws:bedrock:*::foundation-model/*';
     const allowDirectAccess = options.allowModelsDirectAccess ?? false;
 
@@ -329,19 +329,5 @@ export class ApplicationInferenceProfile extends Resource implements IApplicatio
     }
 
     return grant;
-  }
-
-  /**
-   * Grants permissions to an IAM principal to invoke Bedrock foundation models
-   *
-   * By default, this grants permissions to invoke models only via the inference profile.
-   * To allow direct model access, set allowModelsDirectAccess to true in the options.
-   *
-   * @param grantee The IAM principal to grant permissions to
-   * @param options Additional options (such as allowing direct model access or tag conditions)
-   * @returns The granted permission
-   */
-  public grantInvoke(grantee: iam.IGrantable, options: GrantInvokeOptions = {}): iam.Grant {
-    return this._grantInvokeImplementation(grantee, options);
   }
 }
